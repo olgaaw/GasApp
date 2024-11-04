@@ -1,0 +1,11 @@
+
+.navbar {
+    padding: 20px;
+    height: 90px;
+    background-color: #FF7C37;
+}
+
+.text-shadow {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 1);
+    font-size: 3rem
+}
