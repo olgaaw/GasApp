@@ -10,7 +10,7 @@ export class GasService {
 
   constructor(private http: HttpClient) { }
 
-  getEeSsList(): Observable<ListaEeSsPrecioResponse> {
-    return this.http.get<ListaEeSsPrecioResponse>('https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/')
+  getEeSsList() {
+    return this.http.get('https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/');
   }
 }
