@@ -7,13 +7,12 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { GasListComponent } from './components/gas-list/gas-list.component';
 import { MenuComponent } from './shared/menu/menu.component';
 import { provideHttpClient } from '@angular/common/http';
-import { CustomEurPipe } from './pipes/custom-eur.pipe';
 import { FormsModule } from '@angular/forms';
 import { MaterialModule } from './modules/material';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 @NgModule({
-  declarations: [AppComponent,GasListComponent,MenuComponent,CustomEurPipe],
+  declarations: [AppComponent,GasListComponent,MenuComponent],
   imports: [BrowserModule,AppRoutingModule,NgbModule,MaterialModule,FormsModule],
   providers: [provideHttpClient(), provideAnimationsAsync()],
   bootstrap: [AppComponent]
