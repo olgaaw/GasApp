@@ -14,6 +14,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 @NgModule({
   declarations: [AppComponent,GasListComponent,MenuComponent],
   imports: [BrowserModule,AppRoutingModule,NgbModule,MaterialModule,FormsModule],
+
   providers: [provideHttpClient(), provideAnimationsAsync()],
   bootstrap: [AppComponent]
 })
