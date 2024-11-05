@@ -1,26 +1,31 @@
 <div class="d-flex justify-content-between align-items-center mt-4 mb-4 mx-5">
     <div>
-        <label for="search" class="form-label">Nombre:</label>
+        <label for="search" class="form-label"> Nombre: </label>
         <input type="text" class="form-control" id="search" placeholder="Buscar...">
     </div>
 </div>
 
 <div class="row">
-    <h1 class="text-center align-items-center">Gasolineras</h1>
-    <div class="col-4 mb-4 mt-4 align-center">
-        <div class="w-100">
-            <div class="d-flex justify-content-between mb-1 p-2">
-                <h5 class="mb-0 text-capitalize">{{item.name}}</h5>
+    <h1 class="text-center align-items-center"> Gasolineras </h1>
+    @for(item of gasList; track item.IDEESS) {
+        <div class="col-4 mb-4 mt-4 align-center d-flex">
+            <div class="w-100 mx-2">
+                <div class="card p-2">
+                    <div class="d-flex justify-content-center mb-1 p-2">
+                        <h4 class="mb-0 text-capitalize ">{{ item['Rótulo'] }}</h4>
+                    </div>
+                    <h5 class="text-center">{{ item['Provincia'] }} , {{ item['Municipio'] }}</h5>
+                    <p> Dirección: {{ item['Dirección'] }}</p>
+                    <p> Horario: {{ item['Horario'] }}</p>
+                    <h5 class="text-center"> Precios </h5>
+                    <p> Gasoleo A: {{ item['Precio Gasoleo A'] }}</p>
+                    <p> Gasoleo B: {{ item['Precio Gasoleo B'] }}</p>
+                    <p> Gasolina 95 E5: {{ item['Precio Gasolina 95 E5'] }}</p>
+                    <p> Gasolina 98 E5: {{ item['Precio Gasolina 98 E5'] }}</p>
+                    <p> Hidrógeno: {{ item['Precio Hidrogeno'] }}</p>
+                </div>
             </div>
-            <div class="card w-100 bg-secondary">
-                <p>Dirección</p>
-                <p>Horario</p>
-
-            </div>
-            
+        
         </div>
-
-
-
-    </div>
+    }
 </div>
