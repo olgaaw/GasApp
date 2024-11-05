@@ -9,8 +9,11 @@ import { GasService } from '../../services/gas.service';
 })
 export class GasListComponent implements OnInit{
   gasList: ListaEeSsPrecio[] = [];
+  customEurValue: string | number = 0;
 
-  constructor(private gasService: GasService) {}
+
+  constructor(private gasService: GasService
+    ) {}
 
   ngOnInit(): void {
       this.gasService.getEeSsList().subscribe(resp => {
