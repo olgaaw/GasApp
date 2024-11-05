@@ -10,29 +10,33 @@
             <option>Número superior</option>
         </select>
     </div>
-  <mat-slider min="200" max="500">
-    <input value="300" matSliderStartThumb>
-    <input value="400" matSliderEndThumb>
-  </mat-slider>
+
+    <mat-slider min="200" max="500">
+        <input value="300" matSliderStartThumb>
+        <input value="400" matSliderEndThumb>
+    </mat-slider>
 </div>
 
-<div>
-    
-</div>
 <div class="container-fluid">
     <div class="row">
-        <h1 class="text-center align-items-center"> Gasolineras </h1>
+        <h1 class="text-center align-items-center mb-5 mt-4"> Gasolineras </h1>
         @for(item of gasList; track item.IDEESS) {
             <div class="col-4 mb-4 mt-4 align-center d-flex">
-                <div class="w-100 mx-5">
+                <div class="w-100 mx-3">
                     <div class="card p-2">
                         <div class="d-flex justify-content-center mb-1 p-2">
-                            <h4 class="mb-0 text-capitalize ">{{item['Rótulo']}}</h4>
+                            <h4 class="text-capitalize ">{{item['Rótulo']}}</h4>
                         </div>
                         <h5 class="text-center">{{item['Provincia']}} , {{item['Municipio']}}</h5>
-                        <div class="ps-5">
-                            <p> Dirección: {{item['Dirección']}}</p>
-                            <p> Horario: {{item['Horario']}}</p>
+                        <div class="justify-content-center px-4">
+                            <div class="d-flex">
+                                <img id="logo" src="assets/ubicacion.png" alt="ubicacion icon" class="icon"> 
+                                <p> Dirección: {{item['Dirección']}}</p>
+                            </div>
+                            <div class="d-flex">
+                                <img id="logo" src="assets/reloj-de-pared.png" alt="reloj icon" class="icon"> 
+                                <p> Horario: {{item['Horario']}}</p>
+                            </div>
                             <h5 class="text-center"> Precios </h5>
                             <p> Gasoleo A: {{item['Precio Gasoleo A']}}</p>
                             <p> Gasoleo B: {{item['Precio Gasoleo B']}}</p>
