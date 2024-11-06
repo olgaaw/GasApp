@@ -12,8 +12,11 @@ import { ComunidadesAutonomas } from '../../models/comunidades-list.interface';
 })
 export class GasListComponent implements OnInit{
   listaGasolineras: Gasolinera[] = [];
+  filteredGasolineras: Gasolinera[] = [];
   listaCarburantes: CarburantesList[] = [];
   listaComunidades: ComunidadesAutonomas[] = [];
+  searchTerm: string = '';
+  noResultsMessage: string | undefined;
 
   constructor(private gasService: GasService) {}
 
@@ -25,6 +28,8 @@ export class GasListComponent implements OnInit{
           parsedData = JSON.parse(respuestaEnString);
           let arrayGasolineras = parsedData['ListaEESSPrecio'];
           this.listaGasolineras = this.cleanProperties(arrayGasolineras);
+
+          this.filteredGasolineras = this.listaGasolineras;
         } catch (error) {
           console.error('Error parsing JSON:', error);
         }
@@ -38,8 +43,8 @@ export class GasListComponent implements OnInit{
         this.listaComunidades = resp;
       });
       
-
     }
+
 
     private cleanProperties(arrayGasolineras: any) {
       let newArray: Gasolinera[] = [];
@@ -55,12 +60,44 @@ export class GasListComponent implements OnInit{
           gasolineraChusquera['Precio Gasoleo B'],
           gasolineraChusquera['Precio Gasolina 95 E5'],
           gasolineraChusquera['Precio Gasolina 98 E5'],
-          gasolineraChusquera['Precio Hidrogeno'],          
+          gasolineraChusquera['Precio Hidrogeno'],
+          gasolineraChusquera['C.P.']
         );
 
         newArray.push(gasolinera);
       });
       return newArray;
+    }
+
+    buscarGasolineras(): void {
+      let filtered = this.listaGasolineras;
+  
+      if (this.searchTerm.trim() !== '') {
+        filtered = filtered.filter(gasolinera =>
+          gasolinera.nombre.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+          gasolinera.localidad.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+          gasolinera.municipio.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+          gasolinera.cp.toString().includes(this.searchTerm)
+        );
+      }
+  
+      if (this.value > 0) {
+        filtered = filtered.filter(gasolinera =>
+          gasolinera.precioGasoleoA <= this.value ||
+          gasolinera.precioGasoleoB <= this.value ||
+          gasolinera.precioGasolina95E5 <= this.value ||
+          gasolinera.precioGasolina98E5 <= this.value ||
+          gasolinera.precioHidrogeno <= this.value
+        );
+      }
+  
+      this.filteredGasolineras = filtered;
+
+      if (filtered.length === 0) {
+        this.noResultsMessage = 'No se encontraron resultados para la búsqueda.';
+      } else {
+        this.noResultsMessage = ''; 
+      }
     }
 
     private offcanvasService = inject(NgbOffcanvas);

@@ -11,10 +11,9 @@ import { FormsModule } from '@angular/forms';
 import { MaterialModule } from './modules/material';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { EuroPipe } from './pipes/euro.pipe';
-import { FilterComponent } from './components/filter/filter.component';
 
 @NgModule({
-  declarations: [AppComponent,GasListComponent,MenuComponent, EuroPipe, FilterComponent],
+  declarations: [AppComponent,GasListComponent,MenuComponent, EuroPipe],
   imports: [BrowserModule,AppRoutingModule,NgbModule,MaterialModule,FormsModule],
 
   providers: [provideHttpClient(), provideAnimationsAsync()],

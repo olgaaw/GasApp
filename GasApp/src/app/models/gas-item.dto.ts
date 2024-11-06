@@ -11,5 +11,7 @@ export class Gasolinera {
       public precioGasolina95E5: number,
       public precioGasolina98E5: number,
       public precioHidrogeno: number,
+      public cp: number,
+      
     ) {}
   }
