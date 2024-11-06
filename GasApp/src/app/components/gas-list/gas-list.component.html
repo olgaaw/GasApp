@@ -3,23 +3,49 @@
         <input type="text" class="form-control" id="search" placeholder="Buscar...">
     </div>
 
-    <div id="Filtro-home">
-        <select class="form-select">
-            <option>Ordenar por</option>
-            <option>Número inferior</option>
-            <option>Número superior</option>
-        </select>
-    </div>
+    <ng-template #content let-offcanvas>
+        <div class="offcanvas-header">
+            <h4 class="offcanvas-title">Filtros</h4>
+            <button type="button" class="btn-close" aria-label="Close" (click)="offcanvas.dismiss('Cross click')"></button>
+        </div>
+        <div class="offcanvas-body">
+            <h5>Rango de precio</h5>
+            <mat-slider min="200" max="500" >
+                <input value="300" matSliderStartThumb>
+                <input value="400" matSliderEndThumb>
+            </mat-slider>
 
-    <mat-slider min="200" max="500">
-        <input value="300" matSliderStartThumb>
-        <input value="400" matSliderEndThumb>
-    </mat-slider>
+            <div class="mt-5">
+                <h5>Carburantes</h5>
+                <div class="form-check d-flex flex-column mt-4">
+                    @for(carburante of listaCarburantes; track carburante.IDProducto) {
+                        <label class="form-check-label mb-3" for="flexCheckDefault"> <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"> {{carburante.NombreProducto}}</label>
+                    }
+                </div>
+            </div>
+
+            <div class="mt-5">
+                <h5>Comunidades Autonomas</h5>
+                <div class="form-check d-flex flex-column mt-4">
+                    @for(comunidad of listaComunidades; track comunidad.IDCCAA) {
+                        <label class="form-check-label mb-3" for="flexCheckDefault"> <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"> {{comunidad.CCAA}}</label>
+                    }
+                </div>
+            </div>
+            
+
+            <div class="text-end">
+                <button type="button" class="btn btn-outline-dark" (click)="offcanvas.close('Close click')">Close</button>
+            </div>
+        </div>
+    </ng-template>
+
+    <button class="btn btn-lg btn-outline-dark mb-2 me-2" (click)="openEnd(content)">Filtrar por</button>
+
 </div>
 
 <div class="container-fluid">
     <div class="row">
-
         <h1 class="text-center align-items-center"> Gasolineras </h1>
         @for(gasolinera of listaGasolineras; track gasolinera.id) {
             <div class="col-4 mb-4 mt-4 align-center d-flex">
@@ -39,10 +65,8 @@
                             <p> Gasolina 98 E5: {{gasolinera.precioGasolina98E5 | euro}}</p>
                             <p> Hidrógeno: {{gasolinera.precioHidrogeno | euro}}</p>
                         </div>
-                   </div>
-
+                    </div>
                 </div>
-            
             </div>
         }
     </div>
