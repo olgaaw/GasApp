@@ -10,9 +10,15 @@
         </div>
         <div class="offcanvas-body">
             <h5>Rango de precio</h5>
-            <mat-slider min="200" max="500" >
-                <input value="300" matSliderStartThumb>
-                <input value="400" matSliderEndThumb>
+            <mat-slider   class="example-margin"
+            [disabled]="disabled"
+            [max]="max"
+            [min]="min"
+            [step]="step"
+            [discrete]="thumbLabel"
+            [showTickMarks]="showTicks">
+                <input value="1" matSliderStartThumb>
+                <input value="4" matSliderEndThumb>
             </mat-slider>
 
             <div class="mt-5">
@@ -32,16 +38,15 @@
                     }
                 </div>
             </div>
-            
 
-            <div class="text-end">
-                <button type="button" class="btn btn-outline-dark" (click)="offcanvas.close('Close click')">Close</button>
+            <div class="text-center">
+                <button type="button" class="btn btn-outline-dark" >Aplicar</button>
             </div>
+
         </div>
     </ng-template>
 
     <button class="btn btn-lg btn-outline-dark mb-2 me-2" (click)="openEnd(content)">Filtrar por</button>
-
 </div>
 
 <div class="container-fluid">

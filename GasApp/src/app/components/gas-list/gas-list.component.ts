@@ -68,5 +68,13 @@ export class GasListComponent implements OnInit{
     openEnd(content: TemplateRef<any>) {
       this.offcanvasService.open(content, { position: 'end' });
     }
+
+    disabled = false;
+    max = 5;
+    min = 0;
+    showTicks = false;
+    step = 0.2;
+    thumbLabel = true;
+    value = 0;
   }
 
