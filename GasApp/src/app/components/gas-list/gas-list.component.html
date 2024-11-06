@@ -10,21 +10,20 @@
             <option>Número superior</option>
         </select>
     </div>
-  <mat-slider min="200" max="500">
-    <input value="300" matSliderStartThumb>
-    <input value="400" matSliderEndThumb>
-  </mat-slider>
+
+    <mat-slider min="200" max="500">
+        <input value="300" matSliderStartThumb>
+        <input value="400" matSliderEndThumb>
+    </mat-slider>
 </div>
 
-<div>
-    
-</div>
 <div class="container-fluid">
     <div class="row">
+
         <h1 class="text-center align-items-center"> Gasolineras </h1>
         @for(gasolinera of listaGasolineras; track gasolinera.id) {
             <div class="col-4 mb-4 mt-4 align-center d-flex">
-                <div class="w-100 mx-5">
+                <div class="w-100 mx-3">
                     <div class="card p-2">
                         <div class="d-flex justify-content-center mb-1 p-2">
                             <h4 class="mb-0 text-capitalize ">{{gasolinera.nombre}}</h4>
