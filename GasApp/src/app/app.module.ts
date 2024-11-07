@@ -11,9 +11,11 @@ import { FormsModule } from '@angular/forms';
 import { MaterialModule } from './modules/material';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { EuroPipe } from './pipes/euro.pipe';
+import { GoogleMapsLinkPipe } from './pipes/google-maps-link.pipe';
+import { GoogleMapRoutePipe } from './pipes/google-maps-route.pipe';
 
 @NgModule({
-  declarations: [AppComponent,GasListComponent,MenuComponent, EuroPipe],
+  declarations: [AppComponent,GasListComponent,MenuComponent, EuroPipe, GoogleMapsLinkPipe, GoogleMapRoutePipe],
   imports: [BrowserModule,AppRoutingModule,NgbModule,MaterialModule,FormsModule],
 
   providers: [provideHttpClient(), provideAnimationsAsync()],

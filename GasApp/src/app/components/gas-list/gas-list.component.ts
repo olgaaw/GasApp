@@ -5,6 +5,7 @@ import { CarburantesList } from '../../models/carburantes-list.interface';
 import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
 import { ComunidadesAutonomas } from '../../models/comunidades-list.interface';
 import { MatDialog } from '@angular/material/dialog';
+import { MatFormField } from '@angular/material/form-field';
 
 @Component({
   selector: 'app-gas-list',
@@ -92,6 +93,8 @@ export class GasListComponent implements OnInit {
         this.corregirPrecio(gasolineraChusquera['Precio Hidrogeno']),
         gasolineraChusquera['C.P.'],
         gasolineraChusquera['IDCCAA'],
+        gasolineraChusquera['Localiad'],
+        gasolineraChusquera['Longitud (WGS84)'],
         tiposCombustible,
         
 
