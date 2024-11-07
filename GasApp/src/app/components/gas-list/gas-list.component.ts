@@ -2,10 +2,8 @@ import { Component, inject, Input, OnInit, TemplateRef, ViewChild } from '@angul
 import { GasService } from '../../services/gas.service';
 import { Gasolinera } from '../../models/gas-item.dto';
 import { CarburantesList } from '../../models/carburantes-list.interface';
-import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
 import { ComunidadesAutonomas } from '../../models/comunidades-list.interface';
 import { MatDialog } from '@angular/material/dialog';
-import { MatFormField } from '@angular/material/form-field';
 
 @Component({
   selector: 'app-gas-list',
@@ -62,22 +60,12 @@ export class GasListComponent implements OnInit {
     arrayGasolineras.forEach((gasolineraChusquera: any) => {
       let tiposCombustible: string[] = [];
 
-      if (gasolineraChusquera['Precio Gasoleo A'] && this.corregirPrecio(gasolineraChusquera['Precio Gasoleo A']) != null) {
         tiposCombustible.push('Gasoleo A');
-      }
-      if (gasolineraChusquera['Precio Gasoleo B'] && this.corregirPrecio(gasolineraChusquera['Precio Gasoleo B']) != null) {
         tiposCombustible.push('Gasoleo B');
-      }
-      if (gasolineraChusquera['Precio Gasolina 95 E5'] && this.corregirPrecio(gasolineraChusquera['Precio Gasolina 95 E5']) != null) {
-        tiposCombustible.push('Gasolina 95 E5');
-      }
-      if (gasolineraChusquera['Precio Gasolina 98 E5'] && this.corregirPrecio(gasolineraChusquera['Precio Gasolina 98 E5']) != null) {
+        tiposCombustible.push('Gasolina 95 E5')
         tiposCombustible.push('Gasolina 98 E5');
-      }
-      if (gasolineraChusquera['Precio Hidrogeno'] && this.corregirPrecio(gasolineraChusquera['Precio Hidrogeno']) != null) {
-        tiposCombustible.push('Hidrógeno');
-      }
-
+        tiposCombustible.push('Hidrogeno');
+      
       let gasolinera = new Gasolinera(
         gasolineraChusquera['IDEESS'],
         gasolineraChusquera['Rótulo'],
@@ -93,15 +81,30 @@ export class GasListComponent implements OnInit {
         this.corregirPrecio(gasolineraChusquera['Precio Hidrogeno']),
         gasolineraChusquera['C.P.'],
         gasolineraChusquera['IDCCAA'],
-        gasolineraChusquera['Localiad'],
+        gasolineraChusquera['Latitud'],
         gasolineraChusquera['Longitud (WGS84)'],
         tiposCombustible,
-        
-
       );
       newArray.push(gasolinera);
     });
     return newArray;
+  }
+
+  obtenerPrecioCarburante(gasolinera: Gasolinera, carburante: string): number {
+    switch (carburante) {
+      case 'Gasoleo A':
+        return gasolinera.precioGasoleoA;
+      case 'Gasoleo B':
+        return gasolinera.precioGasoleoB;
+      case 'Gasolina 95 E5':
+        return gasolinera.precioGasolina95E5;
+      case 'Gasolina 98 E5':
+        return gasolinera.precioGasolina98E5;
+      case 'Hidrogeno':
+        return gasolinera.precioHidrogeno;
+      default:
+        return 0;
+    }
   }
 
   corregirPrecio(precio: string): number {
@@ -134,26 +137,29 @@ export class GasListComponent implements OnInit {
       selectedCarburante: this.selectedCarburantes,
       selectedComunidad: this.selectedComunidades
     });
-    
-    //los filtros se sobreescriben al añadir varios y muestra solo el ultimo filtro - arreglarlo 
-    this.filtrarCarburantes();
-    this.filtrarComunidad();
-    //this.filtrarPrecio();
+    this.filteredGasolineras = this.filtrarGasolineras();
   
     this.dialog.closeAll();
   }
   
-  filtrarCarburantes(): void {
+  filtrarGasolineras(): Gasolinera[] {
+    const comunidad = this.selectedComunidades || '';
     const carburante = this.selectedCarburantes || '';
-    console.log('Carburante seleccionado:', carburante);
   
-    if (carburante) {
-      this.filteredGasolineras = this.filteredGasolineras.filter(gasolinera =>
-        gasolinera.tiposCombustible.includes(carburante)
-      );
-    } else {
-      this.filteredGasolineras = [...this.filteredGasolineras];
-    }
+    return this.listaGasolineras.filter(gasolinera => {
+      let esDeLaComunidad = true;
+      if (comunidad) {
+        esDeLaComunidad = gasolinera.idComunidad === comunidad;
+      }
+  
+      let tieneCarburante = true;
+      if (carburante) {
+        tieneCarburante = gasolinera.tiposCombustible.includes(carburante) && 
+                          this.obtenerPrecioCarburante(gasolinera, carburante) > 0;
+      }
+  
+      return esDeLaComunidad && tieneCarburante;
+    });
   }
   
   
@@ -168,6 +174,21 @@ export class GasListComponent implements OnInit {
   
   }
 
+  filtrarCarburantes(): void {
+    const carburante = this.selectedCarburantes || '';
+    console.log('Carburante seleccionado:', carburante);
+  
+    if (carburante) {
+      this.filteredGasolineras = this.filteredGasolineras.filter(gasolinera => {
+        const precioCarburante = this.obtenerPrecioCarburante(gasolinera, carburante);
+        return gasolinera.tiposCombustible.includes(carburante) && precioCarburante > 0;
+      });
+    } else {
+      this.filteredGasolineras = [...this.listaGasolineras];
+    }
+    
+  }
+  
   filtrarComunidad(): void {
     const comunidad = this.selectedComunidades || '';
     console.log('Comunidad seleccionada:', comunidad);
