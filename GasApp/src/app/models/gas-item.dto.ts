@@ -3,7 +3,8 @@ export class Gasolinera {
       public id: number,
       public nombre: string,
       public localidad: string,
-      public municipio: string,     
+      public municipio: string,  
+      public provincia: string,   
       public direccion: string,
       public horario: string,
       public precioGasoleoA: number,
@@ -12,6 +13,7 @@ export class Gasolinera {
       public precioGasolina98E5: number,
       public precioHidrogeno: number,
       public cp: number,
-      
+
     ) {}
+
   }
