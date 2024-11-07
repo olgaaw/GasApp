@@ -17,14 +17,11 @@
             <mat-form-field appearance="fill" class="w-100">
                 <mat-label>Seleccionar carburante</mat-label>
                 <mat-select [(value)]="selectedCarburantes">
-                    @for(carburante of listaCarburantes; track carburante.IDProducto) {
-                    <mat-option [value]="carburante.NombreProducto">
-                        {{ carburante.NombreProducto }}
-                    </mat-option>
-                    }
-                    <mat-option *ngFor="let carburante of listaCarburantes" [value]="carburante.NombreProducto">
-                        {{ carburante.NombreProducto }}
-                    </mat-option>
+                    <mat-option value="Gasoleo A">Gasóleo A </mat-option>
+                    <mat-option value="Gasoleo B">Gasóleo B</mat-option>
+                    <mat-option value="Gasolina 95 E5">Gasolina 95 E5</mat-option>
+                    <mat-option value="Gasolina 98 E5">Gasolina 98 E5</mat-option>
+                    <mat-option value="Hidrogeno">Hidrógeno</mat-option>
                 </mat-select>
             </mat-form-field>
 
@@ -42,7 +39,7 @@
 
             <mat-divider class="mt-4"></mat-divider>
             <div class="text-center mt-3">
-                <button mat-button (click)="aplicarFiltros()">Aplicar</button>
+                <button mat-button type="button" (click)="aplicarFiltros()">Aplicar</button>
             </div>
         </div>
     </mat-sidenav>
@@ -84,6 +81,7 @@
                                 <p>Hidrógeno: {{ gasolinera.precioHidrogeno | euro }}</p>
                                 <a [href]="gasolinera | googleMapRoute" target="_blank" ><button
                                     mat-raised-button>Ver localización</button></a>
+                                <p></p>
                             </div>
                         </div>
                     </div>
