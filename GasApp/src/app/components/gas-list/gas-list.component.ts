@@ -93,11 +93,9 @@ export class GasListComponent implements OnInit {
         this.corregirPrecio(gasolineraChusquera['Precio Hidrogeno']),
         gasolineraChusquera['C.P.'],
         gasolineraChusquera['IDCCAA'],
-        gasolineraChusquera['Localiad'],
+        gasolineraChusquera['Latitud'],
         gasolineraChusquera['Longitud (WGS84)'],
         tiposCombustible,
-        
-
       );
       newArray.push(gasolinera);
     });
@@ -134,11 +132,8 @@ export class GasListComponent implements OnInit {
       selectedCarburante: this.selectedCarburantes,
       selectedComunidad: this.selectedComunidades
     });
-    
-    //los filtros se sobreescriben al añadir varios y muestra solo el ultimo filtro - arreglarlo 
     this.filtrarCarburantes();
     this.filtrarComunidad();
-    //this.filtrarPrecio();
   
     this.dialog.closeAll();
   }
