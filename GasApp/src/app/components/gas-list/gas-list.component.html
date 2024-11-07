@@ -1,77 +1,92 @@
-<div class="d-flex justify-content-between align-items-center mt-4 mb-4 mx-5">
-    <div>
-        <input type="text" class="form-control" id="search" placeholder="Buscar..." [(ngModel)]="searchTerm" (input)="buscarGasolineras()">
-    </div>
-
-    <ng-template #content let-offcanvas>
-        <div class="offcanvas-header">
-            <h4 class="offcanvas-title">Filtros</h4>
-            <button type="button" class="btn-close" aria-label="Close" (click)="offcanvas.dismiss('Cross click')"></button>
+<mat-sidenav-container class="example-container">
+    <mat-sidenav #sidenav mode="side" position="end">
+        <div class="d-flex justify-content-between align-items-center p-3">
+            <h2>Filtros</h2>
+            <button mat-icon-button (click)="sidenav.close()">
+                <mat-icon>close</mat-icon>
+            </button>
         </div>
-        <div class="offcanvas-body">
+
+        <mat-divider></mat-divider>
+
+        <div class="p-3">
             <h5>Rango de precio</h5>
-            <mat-slider class="example-margin"  [max]="max" [min]="min" [step]="step" [discrete]="thumbLabel">
-                <input value="1" matSliderStartThumb>
-                <input value="4" matSliderEndThumb>
-            </mat-slider>
+            
 
-            <div class="mt-5">
-                <h5>Carburantes</h5>
-                <div class="form-check d-flex flex-column mt-4">
+            <h5 class="mt-5">Carburantes</h5>
+            <mat-form-field appearance="fill" class="w-100">
+                <mat-label>Seleccionar carburante</mat-label>
+                <mat-select [(value)]="selectedCarburantes">
                     @for(carburante of listaCarburantes; track carburante.IDProducto) {
-                        <label class="form-check-label mb-3" for="flexCheckDefault"> <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"> {{carburante.NombreProducto}}</label>
+                        <mat-option [value]="carburante.NombreProducto">
+                            {{ carburante.NombreProducto }}
+                        </mat-option>
                     }
-                </div>
-            </div>
+                    <mat-option *ngFor="let carburante of listaCarburantes" [value]="carburante.NombreProducto">
+                    {{ carburante.NombreProducto }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
 
-            <div class="mt-5">
-                <h5>Comunidades Autonomas</h5>
-                <div class="form-check d-flex flex-column mt-4">
+            <h5 class="mt-5">Comunidades Autonomas</h5>
+            <mat-form-field appearance="fill" class="w-100">
+                <mat-label>Seleccionar comunidad</mat-label>
+                <mat-select [(value)]="selectedComunidades">
                     @for(comunidad of listaComunidades; track comunidad.IDCCAA) {
-                        <label class="form-check-label mb-3" for="flexCheckDefault"> <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"> {{comunidad.CCAA}}</label>
+                        <mat-option [value]="comunidad.IDCCAA">
+                            {{ comunidad.CCAA }}
+                        </mat-option>
                     }
+                </mat-select>
+            </mat-form-field>
+
+            <mat-divider class="mt-4"></mat-divider>
+            <div class="text-center mt-3">
+                <button mat-button (click)="aplicarFiltros()">Aplicar</button>
+            </div>
+        </div>
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+        <div class="d-flex justify-content-between align-items-center mt-4 mb-4 mx-5">
+            <div>
+                <input type="text" class="form-control" id="search" placeholder="Buscar..." [(ngModel)]="searchTerm" (input)="buscarGasolineras()">
+            </div>
+            <button mat-button class="btn mb-2 me-2" (click)="sidenav.open()">Filtrar por</button>
+        </div>
+
+        <div class="container-fluid">
+            <div class="row">
+                <h1 class="text-center align-items-center">Gasolineras</h1>
+        
+                <div *ngIf="noResultsMessage" class="alert alert-warning text-center mt-4">
+                    {{ noResultsMessage }}
                 </div>
-            </div>
 
-            <div class="text-center">
-                <button type="button" class="btn btn-outline-dark">Aplicar</button>
-            </div>
-
-        </div>
-    </ng-template>
-
-    <button class="btn btn-lg btn-outline-dark mb-2 me-2" (click)="openEnd(content)">Filtrar por</button>
-</div>
-
-<div class="container-fluid">
-    <div class="row">
-        <h1 class="text-center align-items-center"> Gasolineras </h1>
-
-        <div *ngIf="noResultsMessage" class="alert alert-warning text-center mt-4">
-            {{ noResultsMessage }}
-        </div>
-
-        @for(gasolinera of filteredGasolineras; track gasolinera.id) {
-            <div class="col-4 mb-4 mt-4 align-center d-flex">
-                <div class="w-100 mx-3">
-                    <div class="card p-2">
-                        <div class="d-flex justify-content-center mb-1 p-2">
-                            <h4 class="mb-0 text-capitalize ">{{gasolinera.nombre}}</h4>
-                        </div>
-                        <h5 class="text-center">{{gasolinera.localidad}} , {{gasolinera.municipio}} ({{gasolinera.cp}})</h5>
-                        <div class="ps-5">
-                            <p> Dirección: {{gasolinera.direccion}}</p>
-                            <p> Horario: {{gasolinera.horario}}</p>
-                            <h5 class="text-center"> Precios </h5>
-                            <p> Gasoleo A: {{gasolinera.precioGasoleoA | euro}}</p>
-                            <p> Gasoleo B: {{gasolinera.precioGasoleoB | euro}}</p>
-                            <p> Gasolina 95 E5: {{gasolinera.precioGasolina95E5 | euro}}</p>
-                            <p> Gasolina 98 E5: {{gasolinera.precioGasolina98E5 | euro}}</p>
-                            <p> Hidrógeno: {{gasolinera.precioHidrogeno | euro}}</p>
+                @for(gasolinera of filteredGasolineras; track gasolinera.id) {
+                    <div  class="col-4 mb-4 mt-4 align-center d-flex">
+                        <div class="w-100 mx-3">
+                            <div class="card p-2">
+                                <div class="d-flex justify-content-center mb-1 p-2">
+                                    <h4 class="mb-0 text-capitalize">{{ gasolinera.nombre }}</h4>
+                                </div>
+                                <h5 class="text-center">{{ gasolinera.localidad }} , {{ gasolinera.municipio }} ({{ gasolinera.cp }})</h5>
+                                <div class="ps-5">
+                                    <p>Dirección: {{ gasolinera.direccion }}</p>
+                                    <p>Horario: {{ gasolinera.horario }}</p>
+                                    <h5 class="text-center">Precios</h5>
+                                    <p>Gasoleo A: {{ gasolinera.precioGasoleoA | euro }}</p>
+                                    <p>Gasoleo B: {{ gasolinera.precioGasoleoB | euro }}</p>
+                                    <p>Gasolina 95 E5: {{ gasolinera.precioGasolina95E5 | euro }}</p>
+                                    <p>Gasolina 98 E5: {{ gasolinera.precioGasolina98E5 | euro }}</p>
+                                    <p>Hidrógeno: {{ gasolinera.precioHidrogeno | euro }}</p>
+                                    <button mat-button (click)="aplicarFiltros()">Ver localización</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
+                }
             </div>
-        }
-    </div>
-</div>
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>

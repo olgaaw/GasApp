@@ -1,9 +1,11 @@
-import { Component, inject, Input, OnInit, TemplateRef } from '@angular/core';
+import { Component, inject, Input, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { GasService } from '../../services/gas.service';
 import { Gasolinera } from '../../models/gas-item.dto';
 import { CarburantesList } from '../../models/carburantes-list.interface';
 import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
 import { ComunidadesAutonomas } from '../../models/comunidades-list.interface';
+import { MatDialog } from '@angular/material/dialog';
+import { MatFormField } from '@angular/material/form-field';
 
 @Component({
   selector: 'app-gas-list',
@@ -16,8 +18,8 @@ export class GasListComponent implements OnInit {
   listaCarburantes: CarburantesList[] = [];
   listaComunidades: ComunidadesAutonomas[] = [];
 
-  selectedCarburantes: string[] = []; 
-  selectedComunidades: string[] = [];
+  selectedCarburantes: string | undefined; 
+  selectedComunidades: string | undefined;
 
   searchTerm: string = '';
   noResultsMessage: string | undefined;
@@ -30,7 +32,7 @@ export class GasListComponent implements OnInit {
   @Input() precioMaximo = 0;
   
 
-  constructor(private gasService: GasService) {}
+  constructor(private gasService: GasService, public dialog: MatDialog) {}
 
   ngOnInit(): void {
     this.gasService.getEeSsList().subscribe(resp => {
@@ -58,6 +60,24 @@ export class GasListComponent implements OnInit {
   private cleanProperties(arrayGasolineras: any): Gasolinera[] {
     let newArray: Gasolinera[] = [];
     arrayGasolineras.forEach((gasolineraChusquera: any) => {
+      let tiposCombustible: string[] = [];
+
+      if (gasolineraChusquera['Precio Gasoleo A'] && this.corregirPrecio(gasolineraChusquera['Precio Gasoleo A']) != null) {
+        tiposCombustible.push('Gasoleo A');
+      }
+      if (gasolineraChusquera['Precio Gasoleo B'] && this.corregirPrecio(gasolineraChusquera['Precio Gasoleo B']) != null) {
+        tiposCombustible.push('Gasoleo B');
+      }
+      if (gasolineraChusquera['Precio Gasolina 95 E5'] && this.corregirPrecio(gasolineraChusquera['Precio Gasolina 95 E5']) != null) {
+        tiposCombustible.push('Gasolina 95 E5');
+      }
+      if (gasolineraChusquera['Precio Gasolina 98 E5'] && this.corregirPrecio(gasolineraChusquera['Precio Gasolina 98 E5']) != null) {
+        tiposCombustible.push('Gasolina 98 E5');
+      }
+      if (gasolineraChusquera['Precio Hidrogeno'] && this.corregirPrecio(gasolineraChusquera['Precio Hidrogeno']) != null) {
+        tiposCombustible.push('Hidrógeno');
+      }
+
       let gasolinera = new Gasolinera(
         gasolineraChusquera['IDEESS'],
         gasolineraChusquera['Rótulo'],
@@ -71,7 +91,13 @@ export class GasListComponent implements OnInit {
         this.corregirPrecio(gasolineraChusquera['Precio Gasolina 95 E5']),
         this.corregirPrecio(gasolineraChusquera['Precio Gasolina 98 E5']),
         this.corregirPrecio(gasolineraChusquera['Precio Hidrogeno']),
-        gasolineraChusquera['C.P.']
+        gasolineraChusquera['C.P.'],
+        gasolineraChusquera['IDCCAA'],
+        gasolineraChusquera['Localiad'],
+        gasolineraChusquera['Longitud (WGS84)'],
+        tiposCombustible,
+        
+
       );
       newArray.push(gasolinera);
     });
@@ -103,45 +129,63 @@ export class GasListComponent implements OnInit {
   }
 
   aplicarFiltros(): void {
-    let filtered = this.listaGasolineras;
+    console.log('Filtros aplicados:', {
+      precioMinimo: this.precioMinimo,
+      selectedCarburante: this.selectedCarburantes,
+      selectedComunidad: this.selectedComunidades
+    });
     
+    //los filtros se sobreescriben al añadir varios y muestra solo el ultimo filtro - arreglarlo 
+    this.filtrarCarburantes();
+    this.filtrarComunidad();
+    //this.filtrarPrecio();
+  
+    this.dialog.closeAll();
+  }
+  
+  filtrarCarburantes(): void {
+    const carburante = this.selectedCarburantes || '';
+    console.log('Carburante seleccionado:', carburante);
+  
+    if (carburante) {
+      this.filteredGasolineras = this.filteredGasolineras.filter(gasolinera =>
+        gasolinera.tiposCombustible.includes(carburante)
+      );
+    } else {
+      this.filteredGasolineras = [...this.filteredGasolineras];
+    }
+  }
+  
+  
+  filtrarPrecio(): void {
+    let filtered = this.filteredGasolineras;
+  
     filtered = filtered.filter(gasolinera =>
       gasolinera.precioGasolina95E5 >= this.precioMinimo && gasolinera.precioGasolina95E5 <= this.precioMaximo
     );
-
-    if (this.selectedCarburantes.length > 0) {
-      filtered = filtered.filter(gasolinera => {
-        return this.selectedCarburantes.some(carburante => {
-          switch (carburante) {
-            case 'Gasoleo A':
-              return gasolinera.precioGasoleoA > 0;
-            case 'Gasoleo B':
-              return gasolinera.precioGasoleoB > 0;
-            case 'Gasolina 95 E5':
-              return gasolinera.precioGasolina95E5 > 0;
-            case 'Gasolina 98 E5':
-              return gasolinera.precioGasolina98E5 > 0;
-            case 'Hidrógeno':
-              return gasolinera.precioHidrogeno > 0;
-            default:
-              return false;
-          }
-        });
-      });
-    }
-
-    if (this.selectedComunidades.length > 0) {
-      filtered = filtered.filter(gasolinera => 
-        this.selectedComunidades.includes(gasolinera.provincia)
-      );
-    }
-
+  
     this.filteredGasolineras = filtered;
+  
   }
 
-  private offcanvasService = inject(NgbOffcanvas);
-
-  openEnd(content: TemplateRef<any>) {
-    this.offcanvasService.open(content, { position: 'end' });
+  filtrarComunidad(): void {
+    const comunidad = this.selectedComunidades || '';
+    console.log('Comunidad seleccionada:', comunidad);
+  
+    if (comunidad) {
+      this.filteredGasolineras = this.listaGasolineras.filter(gasolinera =>
+        gasolinera.idComunidad == comunidad
+      );
+    } else {
+      this.filteredGasolineras = [...this.listaGasolineras];
+    }
   }
+  
+
+  @ViewChild('dialogContent') dialogContent!: TemplateRef<any>;
+
+  openFilterDialog(): void {
+    this.dialog.open(this.dialogContent);
+  }
+
 }
