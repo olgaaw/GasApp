@@ -13,7 +13,9 @@ export class Gasolinera {
       public precioGasolina98E5: number,
       public precioHidrogeno: number,
       public cp: number,
-
+      public idComunidad: string,
+      public tiposCombustible: string[] = [],
+      public comunidades: string[] = []
     ) {}
 
   }
