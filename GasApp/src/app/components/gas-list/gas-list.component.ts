@@ -139,6 +139,34 @@ export class GasListComponent implements OnInit {
     this.filteredGasolineras = filtered;
   }
 
+  filtrarCarburantes():void {
+    let filtered = this.listaGasolineras;
+
+    if (this.selectedCarburantes.length > 0) {
+      filtered = filtered.filter(gasolinera => {
+        return this.selectedCarburantes.some(carburante => {
+          switch (carburante) {
+            case 'Gasoleo A':
+              return gasolinera.precioGasoleoA > 0;
+            case 'Gasoleo B':
+              return gasolinera.precioGasoleoB > 0;
+            case 'Gasolina 95 E5':
+              return gasolinera.precioGasolina95E5 > 0;
+            case 'Gasolina 98 E5':
+              return gasolinera.precioGasolina98E5 > 0;
+            case 'Hidrógeno':
+              return gasolinera.precioHidrogeno > 0;
+            default:
+              return false;
+          }
+        });
+      });
+      this.filteredGasolineras = filtered;
+    }
+  }
+
+  
+
   private offcanvasService = inject(NgbOffcanvas);
 
   openEnd(content: TemplateRef<any>) {

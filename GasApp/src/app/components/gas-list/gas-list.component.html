@@ -11,15 +11,15 @@
         <div class="offcanvas-body">
             <h5>Rango de precio</h5>
             <mat-slider class="example-margin"  [max]="max" [min]="min" [step]="step" [discrete]="thumbLabel">
-                <input value="1" matSliderStartThumb>
-                <input value="4" matSliderEndThumb>
+                <input value="1" [(ngModel)]="precioMinimo" matSliderStartThumb>
+                <input value="4" [(ngModel)]="precioMaximo" matSliderEndThumb>
             </mat-slider>
 
             <div class="mt-5">
                 <h5>Carburantes</h5>
                 <div class="form-check d-flex flex-column mt-4">
                     @for(carburante of listaCarburantes; track carburante.IDProducto) {
-                        <label class="form-check-label mb-3" for="flexCheckDefault"> <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"> {{carburante.NombreProducto}}</label>
+                        <label class="form-check-label mb-3" for="flexCheckDefault"> <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" [(ngModel)]="selectedCarburantes" (input)="filtrarCarburantes()"> {{carburante.NombreProducto}}</label>
                     }
                 </div>
             </div>
@@ -40,7 +40,7 @@
         </div>
     </ng-template>
 
-    <button class="btn btn-lg btn-outline-dark mb-2 me-2" (click)="openEnd(content)">Filtrar por</button>
+    <button class="btn btn-outline-dark mb-2 me-2" (click)="openEnd(content)">Filtrar por</button>
 </div>
 
 <div class="container-fluid">
@@ -68,9 +68,11 @@
                             <p> Gasolina 95 E5: {{gasolinera.precioGasolina95E5 | euro}}</p>
                             <p> Gasolina 98 E5: {{gasolinera.precioGasolina98E5 | euro}}</p>
                             <p> Hidrógeno: {{gasolinera.precioHidrogeno | euro}}</p>
+                            <button class="btn btn-outline-dark mb-2 me-2 justify-content-between">Mostrar localización</button>
                         </div>
                     </div>
                 </div>
+                
             </div>
         }
     </div>
