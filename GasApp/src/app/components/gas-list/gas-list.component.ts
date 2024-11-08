@@ -222,7 +222,7 @@ export class GasListComponent implements OnInit {
 
   buscarProvincias() {
     if (this.selectedComunidad) {
-      this.gasService.getEstacionesUnaProvincia(this.selectedComunidad).subscribe((resp) => {
+      this.gasService.getProvinciasList(this.selectedComunidad).subscribe((resp) => {
         this.listaProvincias = resp;
       });
     } else {
