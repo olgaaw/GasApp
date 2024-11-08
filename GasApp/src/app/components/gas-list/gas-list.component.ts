@@ -126,16 +126,16 @@ export class GasListComponent implements OnInit {
 
   buscarCodigosPostales(): void {
     if (this.searchTerm) {
-      console.log("Búsqueda en códigos postales con:", this.searchTerm);  // Depura el término de búsqueda
+      console.log("Búsqueda en códigos postales con:", this.searchTerm);
 
       this.filteredCodes = this.filteredCodes.filter(code =>
         code.codigo_postal.toString().includes(this.searchTerm) || 
         code.municipio_nombre.toLowerCase().includes(this.searchTerm.toLowerCase())
       );
-      console.log("Códigos filtrados:", this.filteredCodes);  // Verifica los códigos postales filtrados
+      console.log("Códigos filtrados:", this.filteredCodes); 
 
     } else {
-      this.filteredCodes = []; // Si no hay búsqueda, ocultar los resultados
+      this.filteredCodes = []; 
     }
   }
 
