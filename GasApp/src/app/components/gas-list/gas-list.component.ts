@@ -17,7 +17,7 @@ export class GasListComponent implements OnInit {
   filteredGasolineras: Gasolinera[] = [];
   listaCarburantes: CarburantesList[] = [];
   listaComunidades: ComunidadesAutonomas[] = [];
-  filteredCodes: CodigoPostal[] = [];  // Para almacenar los códigos postales filtrados
+  filteredCodes: CodigoPostal[] = [];
 
   
 
@@ -64,7 +64,7 @@ export class GasListComponent implements OnInit {
 
     this.gasService.getCodigosPostales().subscribe((codes) => {
       this.filteredCodes = codes;
-      console.log("Códigos postales cargados:", this.filteredCodes);  // Verifica los códigos postales
+      console.log("Códigos postales cargados:", this.filteredCodes);
     });
   }
 

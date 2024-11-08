@@ -60,7 +60,7 @@
         <div class="d-flex justify-content-between align-items-center mt-4 mb-4 mx-5">
             <div>
                 <mat-form-field class="w-100">
-                    <input matInput [matAutocomplete]="auto" id="search" placeholder="Buscar por código postal..."
+                    <input matInput [matAutocomplete]="auto" id="search" placeholder="Buscar por C.P"
                         [(ngModel)]="searchTerm" (input)="buscarCodigosPostales()">
                     <mat-autocomplete #auto="matAutocomplete">
                         @for(code of filteredCodes; track code.codigo_postal) {
