@@ -242,7 +242,7 @@ export class GasListComponent implements OnInit {
         return gasolinera.tiposCombustible.includes(carburante) && precioCarburante > 0;
       });
     } else {
-      this.filteredGasolineras = [...this.listaGasolineras];
+      this.filteredGasolineras = this.listaGasolineras;
     }
     
   }
@@ -256,7 +256,7 @@ export class GasListComponent implements OnInit {
         gasolinera.idComunidad == comunidad
       );
     } else {
-      this.filteredGasolineras = [...this.listaGasolineras];
+      this.filteredGasolineras = this.listaGasolineras;
     }
   }
   

@@ -60,29 +60,31 @@
         <div class="d-flex justify-content-between align-items-center mt-4 mb-4 mx-5">
             <div>
                 <mat-form-field class="w-100">
-                    <input matInput [matAutocomplete]="auto" id="search" placeholder="Buscar por C.P"
-                        [(ngModel)]="searchTerm" (input)="buscarCodigosPostales()">
-                    <mat-autocomplete #auto="matAutocomplete">
-                        @for(code of filteredCodes; track code.codigo_postal) {
-                        <mat-option (onSelectionChange)="seleccionarCodigoPostal(code)">
-                            {{ code.codigo_postal }} - {{ code.municipio_nombre }}
-                        </mat-option>
-                        }
-                    </mat-autocomplete>
+                  <input matInput 
+                         [matAutocomplete]="auto" 
+                         id="search" 
+                         placeholder="Buscar por C.P" 
+                         [(ngModel)]="searchTerm" 
+                         (input)="buscarCodigosPostales()">
+                  <mat-autocomplete #auto="matAutocomplete">
+                    <mat-option *ngFor="let code of filteredCodes" [value]="code.codigo_postal" (onSelectionChange)="seleccionarCodigoPostal(code)">
+                      {{ code.codigo_postal }} - {{ code.municipio_nombre }}
+                    </mat-option>
+                  </mat-autocomplete>
                 </mat-form-field>
-            </div>
+              </div>
             <button mat-button class="btn mb-2 me-2" (click)="sidenav.open()">Filtrar por</button>
         </div>
 
         <div class="container-fluid">
             <div class="row">
                 <h1 class="text-center align-items-center">Gasolineras</h1>
-
                 @if(noResultsMessage){
-                <div class="alert alert-warning text-center mt-4">
-                    {{ noResultsMessage }}
-                </div>
+                    <div class="alert alert-warning text-center mt-4">
+                        {{ noResultsMessage }}
+                    </div>
                 }
+                
                 @for(gasolinera of filteredGasolineras; track gasolinera.id) {
                 <div class="col-4 mb-4 mt-4 align-center d-flex">
                     <div class="w-100 mx-3">
@@ -101,8 +103,8 @@
                                 <p>Gasolina 95 E5: {{ gasolinera.precioGasolina95E5 | euro }}</p>
                                 <p>Gasolina 98 E5: {{ gasolinera.precioGasolina98E5 | euro }}</p>
                                 <p>Hidrógeno: {{ gasolinera.precioHidrogeno | euro }}</p>
-                                <a [href]="gasolinera | googleMapRoute" target="_blank"><button mat-raised-button>Ver
-                                        localización</button></a>
+                                <a [href]="gasolinera | googleMapRoute" target="_blank" ><button
+                                    mat-raised-button>Ver localización</button></a>
                                 <p></p>
                             </div>
                         </div>
