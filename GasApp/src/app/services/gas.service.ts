@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
-import { ListaEeSsPrecioResponse } from '../models/gas-list.interface';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { CarburantesListResponse } from '../models/carburantes-list.interface';
 import { ComunidadesAutonomasResponse } from '../models/comunidades-list.interface';
-import { CodeList } from '../models/cp-list.interface';
-import { Provincias, ProvinciasListResponse } from '../models/provincias-list.interface';
+
+import { ProvinciasListResponse } from '../models/provincias-list.interface';
+import { CodigoPostal } from '../models/codigo-postal.interface';
+
 
 @Injectable({
   providedIn: 'root'
@@ -26,20 +27,13 @@ export class GasService {
     return this.http.get<ComunidadesAutonomasResponse>('https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/Listados/ComunidadesAutonomas/')
   }
 
-  getGasListPorUnComun(iDCCAA: string) {
-    return this.http.get(`https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/FiltroCCAA/${iDCCAA}`);
+
+  getProvinciasPorComunidad(idComunidad: string): Observable<ProvinciasListResponse> {
+    return this.http.get<ProvinciasListResponse>(`https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/Listados/ProvinciasPorComunidad/${idComunidad}`);
   }
 
-  getProvinciasList(iDCCAA: string): Observable<Provincias[]>{
-    return this.http.get<Provincias[]>(`https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/Listados/ProvinciasPorComunidad/${iDCCAA}`);
-  }
-
-  getEstacionesUnaProvincia(idPovincia: string): Observable<any>{
-    return this.http.get(`https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/FiltroProvincia/${idPovincia}`)
-  }
-
-  getCodeList(): Observable<CodeList[]> {
-    return this.http.get<CodeList[]>('http://localhost:3000/code-list');
+  getCodigosPostales(): Observable<CodigoPostal[]> {
+    return this.http.get<CodigoPostal[]>('http://localhost:3000/code-list');
   }
 
 }

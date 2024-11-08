@@ -1,30 +1,41 @@
-import { Component, inject, Input, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import {
+  Component,
+  inject,
+  Input,
+  OnInit,
+  TemplateRef,
+  ViewChild,
+} from '@angular/core';
 import { GasService } from '../../services/gas.service';
 import { Gasolinera } from '../../models/gas-item.dto';
 import { CarburantesList } from '../../models/carburantes-list.interface';
 import { ComunidadesAutonomas } from '../../models/comunidades-list.interface';
 import { MatDialog } from '@angular/material/dialog';
-import { CodeList } from '../../models/cp-list.interface';
-import { FormControl } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { Provincias } from '../../models/provincias-list.interface';
+
+import { ProvinciasList } from '../../models/provincias-list.interface';
+import { CodigoPostal } from '../../models/codigo-postal.interface';
+
 
 @Component({
   selector: 'app-gas-list',
   templateUrl: './gas-list.component.html',
-  styleUrls: ['./gas-list.component.css']
+  styleUrls: ['./gas-list.component.css'],
 })
 export class GasListComponent implements OnInit {
   listaGasolineras: Gasolinera[] = [];
   filteredGasolineras: Gasolinera[] = [];
   listaCarburantes: CarburantesList[] = [];
   listaComunidades: ComunidadesAutonomas[] = [];
-  listaProvincias: Provincias[] = [];
-  listaCode: CodeList[] = [];
 
-  selectedCarburante: string | undefined; 
-  selectedComunidad: string | undefined;
+  filteredCodes: CodigoPostal[] = [];
+  originalCodes: CodigoPostal[] = [];
+
+  selectedCarburantes: string | undefined;
+  selectedComunidades: string | undefined;
   selectedProvincia: string | undefined;
+
+  provincias: ProvinciasList[] = [];
+
 
   searchTerm: string = '';
   noResultsMessage: string | undefined;
@@ -35,10 +46,6 @@ export class GasListComponent implements OnInit {
   thumbLabel = true;
   @Input() precioMinimo = 0;
   @Input() precioMaximo = 0;
- 
-  myControl = new FormControl('');
-  options: Observable<string[]> | undefined;
-  
 
   constructor(private gasService: GasService, public dialog: MatDialog) {}
 
@@ -64,11 +71,12 @@ export class GasListComponent implements OnInit {
       this.listaComunidades = resp;
     });
 
-    this.gasService.getCodeList().subscribe(respuesta => {
-      this.listaCode = respuesta;
+
+    this.gasService.getCodigosPostales().subscribe((codes) => {
+      this.filteredCodes = codes;
+      this.originalCodes = codes;
     });
 
-    
   }
 
   private cleanProperties(arrayGasolineras: any): Gasolinera[] {
@@ -76,12 +84,12 @@ export class GasListComponent implements OnInit {
     arrayGasolineras.forEach((gasolineraChusquera: any) => {
       let tiposCombustible: string[] = [];
 
-        tiposCombustible.push('Gasoleo A');
-        tiposCombustible.push('Gasoleo B');
-        tiposCombustible.push('Gasolina 95 E5')
-        tiposCombustible.push('Gasolina 98 E5');
-        tiposCombustible.push('Hidrogeno');
-      
+      tiposCombustible.push('Gasoleo A');
+      tiposCombustible.push('Gasoleo B');
+      tiposCombustible.push('Gasolina 95 E5');
+      tiposCombustible.push('Gasolina 98 E5');
+      tiposCombustible.push('Hidrogeno');
+
       let gasolinera = new Gasolinera(
         gasolineraChusquera['IDEESS'],
         gasolineraChusquera['Rótulo'],
@@ -99,11 +107,15 @@ export class GasListComponent implements OnInit {
         gasolineraChusquera['IDCCAA'],
         gasolineraChusquera['Latitud'],
         gasolineraChusquera['Longitud (WGS84)'],
-        tiposCombustible,
+        tiposCombustible
       );
       newArray.push(gasolinera);
     });
     return newArray;
+  }
+
+  corregirPrecio(precio: string): number {
+    return parseFloat(precio.replace(',', '.')) || 0;
   }
 
   obtenerPrecioCarburante(gasolinera: Gasolinera, carburante: string): number {
@@ -123,19 +135,26 @@ export class GasListComponent implements OnInit {
     }
   }
 
-  corregirPrecio(precio: string): number {
-    return parseFloat(precio.replace(',', '.')) || 0;
+  aplicarFiltros(): void {
+    this.filteredGasolineras = this.filtrarGasolineras();
   }
 
   buscarGasolineras(): void {
     let filtered = this.listaGasolineras;
 
     if (this.searchTerm != '') {
-      filtered = filtered.filter(gasolinera =>
-        gasolinera.nombre.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        gasolinera.localidad.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        gasolinera.municipio.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        gasolinera.cp.toString().includes(this.searchTerm)
+      filtered = filtered.filter(
+        (gasolinera) =>
+          gasolinera.nombre
+            .toLowerCase()
+            .includes(this.searchTerm.toLowerCase()) ||
+          gasolinera.localidad
+            .toLowerCase()
+            .includes(this.searchTerm.toLowerCase()) ||
+          gasolinera.municipio
+            .toLowerCase()
+            .includes(this.searchTerm.toLowerCase()) ||
+          gasolinera.cp.toString().includes(this.searchTerm)
       );
     }
 
@@ -147,70 +166,134 @@ export class GasListComponent implements OnInit {
     }
   }
 
-  aplicarFiltros(): void {
-    this.filteredGasolineras = this.filtrarGasolineras();
-  
+
+  buscarCodigosPostales(): void {
+    if (this.searchTerm) {
+      const formattedSearchTerm = this.searchTerm.padStart(5, '0');
+
+      this.filteredCodes = this.originalCodes.filter((code) =>
+        code.codigo_postal
+          .toString()
+          .padStart(5, '0')
+          .includes(formattedSearchTerm)
+      );
+    } else {
+      this.filteredCodes = [...this.originalCodes];
+    }
+  }
+
+  seleccionarCodigoPostal(code: CodigoPostal): void {
+    this.searchTerm = code.codigo_postal.toString().padStart(5, '0');
+
+    this.filteredGasolineras = this.listaGasolineras.filter((gasolinera) => {
+      const cpGasolinera = gasolinera.cp.toString().padStart(5, '0');
+
+      return cpGasolinera === this.searchTerm;
+    });
+
+    if (this.filteredGasolineras.length === 0) {
+      this.noResultsMessage = 'No existen gasolineras con ese código postal.';
+    } else {
+      this.noResultsMessage = '';
+    }
+  }
+
+  resetBuscarCodigosPostales(): void {
+    this.searchTerm = '';
+
+    this.filteredGasolineras = this.listaGasolineras;
+
+    this.filteredCodes = this.originalCodes;
+
+    this.noResultsMessage = '';
+
   }
   
+  cargarProvincias(): void {
+    if (this.selectedComunidades) {
+      this.gasService
+        .getProvinciasPorComunidad(this.selectedComunidades)
+        .subscribe((resp) => {
+          this.provincias = resp;
+        });
+    } else {
+      this.provincias = [];
+    }
+  }
+
   filtrarGasolineras(): Gasolinera[] {
-    const comunidad = this.selectedComunidad || '';
+
+    const comunidad = this.selectedComunidades || '';
     const provincia = this.selectedProvincia || '';
-    const carburante = this.selectedCarburante || '';
-  
-    return this.listaGasolineras.filter(gasolinera => {
+    const carburante = this.selectedCarburantes || '';
+
+    return this.listaGasolineras.filter((gasolinera) => {
+
       let cumpleComunidad = true;
       let cumpleProvincia = true;
       let cumpleCarburante = true;
 
       if (comunidad) {
-        cumpleComunidad = gasolinera.idComunidad == comunidad;
+
+        cumpleComunidad = gasolinera.idComunidad === comunidad;
       }
 
       if (provincia) {
-        cumpleProvincia = cumpleProvincia && gasolinera.provincia == provincia;
+        cumpleProvincia = cumpleProvincia && gasolinera.provincia === provincia;
       }
 
       if (carburante) {
-        cumpleCarburante = gasolinera.tiposCombustible.includes(carburante) && this.obtenerPrecioCarburante(gasolinera, carburante) > 0;
+        cumpleCarburante =
+          gasolinera.tiposCombustible.includes(carburante) &&
+          this.obtenerPrecioCarburante(gasolinera, carburante) > 0;
+
       }
 
       return cumpleComunidad && cumpleProvincia && cumpleCarburante;
     });
   }
-  
   filtrarPrecio(): void {
     let filtered = this.filteredGasolineras;
-  
-    filtered = filtered.filter(gasolinera =>
-      gasolinera.precioGasolina95E5 >= this.precioMinimo && gasolinera.precioGasolina95E5 <= this.precioMaximo
+
+    filtered = filtered.filter(
+      (gasolinera) =>
+        gasolinera.precioGasolina95E5 >= this.precioMinimo &&
+        gasolinera.precioGasolina95E5 <= this.precioMaximo
     );
-  
+
     this.filteredGasolineras = filtered;
-  
   }
 
   filtrarCarburantes(): void {
-    const carburante = this.selectedCarburante || '';
-    console.log('Carburante seleccionado:', carburante);
-  
+
+    const carburante = this.selectedCarburantes || '';
+
+
     if (carburante) {
-      this.filteredGasolineras = this.filteredGasolineras.filter(gasolinera => {
-        const precioCarburante = this.obtenerPrecioCarburante(gasolinera, carburante);
-        return gasolinera.tiposCombustible.includes(carburante) && precioCarburante > 0;
-      });
+      this.filteredGasolineras = this.filteredGasolineras.filter(
+        (gasolinera) => {
+          const precioCarburante = this.obtenerPrecioCarburante(
+            gasolinera,
+            carburante
+          );
+          return (
+            gasolinera.tiposCombustible.includes(carburante) &&
+            precioCarburante > 0
+          );
+        }
+      );
     } else {
       this.filteredGasolineras = this.listaGasolineras;
     }
-    
   }
-  
+
   filtrarComunidad(): void {
-    const comunidad = this.selectedComunidad || '';
-    console.log('Comunidad seleccionada:', comunidad);
-  
+
+    const comunidad = this.selectedComunidades || '';
+
     if (comunidad) {
-      this.filteredGasolineras = this.listaGasolineras.filter(gasolinera =>
-        gasolinera.idComunidad == comunidad
+      this.filteredGasolineras = this.listaGasolineras.filter(
+        (gasolinera) => gasolinera.idComunidad == comunidad
       );
       this.filtrarProvincias;
     } else {
@@ -240,13 +323,5 @@ export class GasListComponent implements OnInit {
       this.filteredGasolineras = this.listaGasolineras;
     })
   }
-  
-
-  @ViewChild('dialogContent') dialogContent!: TemplateRef<any>;
-
-  openFilterDialog(): void {
-    this.dialog.open(this.dialogContent);
-  }
-
-
 }
+
