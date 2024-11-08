@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { CarburantesListResponse } from '../models/carburantes-list.interface';
 import { ComunidadesAutonomasResponse } from '../models/comunidades-list.interface';
 import { CodeList } from '../models/cp-list.interface';
-import { Provincias } from '../models/provincias-list.interface';
+import { Provincias, ProvinciasListResponse } from '../models/provincias-list.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -34,7 +34,7 @@ export class GasService {
     return this.http.get<Provincias[]>(`https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/Listados/ProvinciasPorComunidad/${iDCCAA}`);
   }
 
-  getEstacionesUnaProvincia(idPovincia: string){
+  getEstacionesUnaProvincia(idPovincia: string): Observable<any>{
     return this.http.get(`https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/FiltroProvincia/${idPovincia}`)
   }
 

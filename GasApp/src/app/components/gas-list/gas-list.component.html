@@ -28,7 +28,7 @@
             <h5 class="mt-5">Comunidades Autonomas</h5>
             <mat-form-field appearance="fill" class="w-100">
                 <mat-label>Seleccionar comunidad</mat-label>
-                <mat-select [(value)]="selectedComunidad">
+                <mat-select [(value)]="selectedComunidad" (selectionChange)="buscarProvincias()">
                     @for(comunidad of listaComunidades; track comunidad.IDCCAA) {
                     <mat-option [value]="comunidad.IDCCAA">
                         {{ comunidad.CCAA }}
@@ -40,7 +40,7 @@
             <h5 class="mt-5">Provincias</h5>
             <mat-form-field appearance="fill" class="w-100">
                 <mat-label>Seleccionar provincia</mat-label>
-                <mat-select [(value)]="selectedComunidad">
+                <mat-select [(ngModel)]="selectedProvincia" [(value)]="selectedProvincia" [disabled]="!selectedComunidad">
                     @for(provincia of listaProvincias; track provincia.IDPovincia) {
                     <mat-option [value]="provincia.IDPovincia">
                         {{ provincia.Provincia }}

@@ -154,21 +154,27 @@ export class GasListComponent implements OnInit {
   
   filtrarGasolineras(): Gasolinera[] {
     const comunidad = this.selectedComunidad || '';
+    const provincia = this.selectedProvincia || '';
     const carburante = this.selectedCarburante || '';
   
     return this.listaGasolineras.filter(gasolinera => {
-      let esDeLaComunidad = true;
+      let cumpleComunidad = true;
+      let cumpleProvincia = true;
+      let cumpleCarburante = true;
+
       if (comunidad) {
-        esDeLaComunidad = gasolinera.idComunidad == comunidad;
-    
+        cumpleComunidad = gasolinera.idComunidad == comunidad;
       }
-  
-      let tieneCarburante = true;
+
+      if (provincia) {
+        cumpleProvincia = cumpleProvincia && gasolinera.provincia == provincia;
+      }
+
       if (carburante) {
-        tieneCarburante = gasolinera.tiposCombustible.includes(carburante) && this.obtenerPrecioCarburante(gasolinera, carburante) > 0;
+        cumpleCarburante = gasolinera.tiposCombustible.includes(carburante) && this.obtenerPrecioCarburante(gasolinera, carburante) > 0;
       }
-  
-      return esDeLaComunidad && tieneCarburante;
+
+      return cumpleComunidad && cumpleProvincia && cumpleCarburante;
     });
   }
   
@@ -214,10 +220,14 @@ export class GasListComponent implements OnInit {
     
   }
 
-  buscarProvincias(IDCCAA: string) {
-    this.gasService.getProvinciasList(IDCCAA).subscribe((respuesta) => {
-      this.listaProvincias = respuesta;
-    });
+  buscarProvincias() {
+    if (this.selectedComunidad) {
+      this.gasService.getEstacionesUnaProvincia(this.selectedComunidad).subscribe((resp) => {
+        this.listaProvincias = resp;
+      });
+    } else {
+      this.listaProvincias = [];
+    }
   }
 
   filtrarProvincias(idProvincias: string) {
