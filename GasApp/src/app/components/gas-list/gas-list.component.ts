@@ -11,8 +11,10 @@ import { Gasolinera } from '../../models/gas-item.dto';
 import { CarburantesList } from '../../models/carburantes-list.interface';
 import { ComunidadesAutonomas } from '../../models/comunidades-list.interface';
 import { MatDialog } from '@angular/material/dialog';
+
 import { ProvinciasList } from '../../models/provincias-list.interface';
 import { CodigoPostal } from '../../models/codigo-postal.interface';
+
 
 @Component({
   selector: 'app-gas-list',
@@ -24,6 +26,7 @@ export class GasListComponent implements OnInit {
   filteredGasolineras: Gasolinera[] = [];
   listaCarburantes: CarburantesList[] = [];
   listaComunidades: ComunidadesAutonomas[] = [];
+
   filteredCodes: CodigoPostal[] = [];
   originalCodes: CodigoPostal[] = [];
 
@@ -32,6 +35,7 @@ export class GasListComponent implements OnInit {
   selectedProvincia: string | undefined;
 
   provincias: ProvinciasList[] = [];
+
 
   searchTerm: string = '';
   noResultsMessage: string | undefined;
@@ -67,10 +71,12 @@ export class GasListComponent implements OnInit {
       this.listaComunidades = resp;
     });
 
+
     this.gasService.getCodigosPostales().subscribe((codes) => {
       this.filteredCodes = codes;
       this.originalCodes = codes;
     });
+
   }
 
   private cleanProperties(arrayGasolineras: any): Gasolinera[] {
@@ -160,6 +166,7 @@ export class GasListComponent implements OnInit {
     }
   }
 
+
   buscarCodigosPostales(): void {
     if (this.searchTerm) {
       const formattedSearchTerm = this.searchTerm.padStart(5, '0');
@@ -199,6 +206,7 @@ export class GasListComponent implements OnInit {
     this.filteredCodes = this.originalCodes;
 
     this.noResultsMessage = '';
+
   }
   
   cargarProvincias(): void {
@@ -214,16 +222,19 @@ export class GasListComponent implements OnInit {
   }
 
   filtrarGasolineras(): Gasolinera[] {
+
     const comunidad = this.selectedComunidades || '';
     const provincia = this.selectedProvincia || '';
     const carburante = this.selectedCarburantes || '';
 
     return this.listaGasolineras.filter((gasolinera) => {
+
       let cumpleComunidad = true;
       let cumpleProvincia = true;
       let cumpleCarburante = true;
 
       if (comunidad) {
+
         cumpleComunidad = gasolinera.idComunidad === comunidad;
       }
 
@@ -235,12 +246,12 @@ export class GasListComponent implements OnInit {
         cumpleCarburante =
           gasolinera.tiposCombustible.includes(carburante) &&
           this.obtenerPrecioCarburante(gasolinera, carburante) > 0;
+
       }
 
       return cumpleComunidad && cumpleProvincia && cumpleCarburante;
     });
   }
-
   filtrarPrecio(): void {
     let filtered = this.filteredGasolineras;
 
@@ -254,7 +265,9 @@ export class GasListComponent implements OnInit {
   }
 
   filtrarCarburantes(): void {
+
     const carburante = this.selectedCarburantes || '';
+
 
     if (carburante) {
       this.filteredGasolineras = this.filteredGasolineras.filter(
@@ -275,14 +288,40 @@ export class GasListComponent implements OnInit {
   }
 
   filtrarComunidad(): void {
+
     const comunidad = this.selectedComunidades || '';
 
     if (comunidad) {
       this.filteredGasolineras = this.listaGasolineras.filter(
         (gasolinera) => gasolinera.idComunidad == comunidad
       );
+      this.filtrarProvincias;
     } else {
       this.filteredGasolineras = this.listaGasolineras;
     }
+
+    
+  }
+
+  buscarProvincias() {
+    if (this.selectedComunidad) {
+      this.gasService.getProvinciasList(this.selectedComunidad).subscribe((resp) => {
+        this.listaProvincias = resp;
+      });
+    } else {
+      this.listaProvincias = [];
+    }
+  }
+
+  filtrarProvincias(idProvincias: string) {
+    this.gasService.getEstacionesUnaProvincia(idProvincias).subscribe((response) => {
+      const respuesString = JSON.stringify(response);
+      let parser;
+      parser = JSON.parse(respuesString);
+      let listaEeSs = parser['ListaEESSPrecio'];
+      this.listaGasolineras = this.cleanProperties(listaEeSs);
+      this.filteredGasolineras = this.listaGasolineras;
+    })
   }
 }
+

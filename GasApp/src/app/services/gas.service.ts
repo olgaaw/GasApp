@@ -3,8 +3,10 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { CarburantesListResponse } from '../models/carburantes-list.interface';
 import { ComunidadesAutonomasResponse } from '../models/comunidades-list.interface';
+
 import { ProvinciasListResponse } from '../models/provincias-list.interface';
 import { CodigoPostal } from '../models/codigo-postal.interface';
+
 
 @Injectable({
   providedIn: 'root'
@@ -25,6 +27,7 @@ export class GasService {
     return this.http.get<ComunidadesAutonomasResponse>('https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/Listados/ComunidadesAutonomas/')
   }
 
+
   getProvinciasPorComunidad(idComunidad: string): Observable<ProvinciasListResponse> {
     return this.http.get<ProvinciasListResponse>(`https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/Listados/ProvinciasPorComunidad/${idComunidad}`);
   }
@@ -32,4 +35,5 @@ export class GasService {
   getCodigosPostales(): Observable<CodigoPostal[]> {
     return this.http.get<CodigoPostal[]>('http://localhost:3000/code-list');
   }
+
 }

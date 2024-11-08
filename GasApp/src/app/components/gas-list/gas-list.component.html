@@ -16,7 +16,7 @@
             <h5 class="mt-5">Carburantes</h5>
             <mat-form-field appearance="fill" class="w-100">
                 <mat-label>Seleccionar carburante</mat-label>
-                <mat-select [(value)]="selectedCarburantes">
+                <mat-select [(value)]="selectedCarburante">
                     <mat-option value="Gasoleo A">Gasóleo A </mat-option>
                     <mat-option value="Gasoleo B">Gasóleo B</mat-option>
                     <mat-option value="Gasolina 95 E5">Gasolina 95 E5</mat-option>
@@ -28,6 +28,7 @@
             <h5 class="mt-5">Comunidades Autónomas</h5>
             <mat-form-field appearance="fill" class="w-100">
                 <mat-label>Seleccionar comunidad</mat-label>
+
                 <mat-select [(value)]="selectedComunidades" (selectionChange)="cargarProvincias()">
                     @for(comunidad of listaComunidades; track comunidad.IDCCAA) {
                     <mat-option [value]="comunidad.IDCCAA">
@@ -38,11 +39,13 @@
             </mat-form-field>
 
             <h5 class="mt-5">Provincias</h5>
+
             <mat-form-field appearance="fill">
                 <mat-label>Provincia</mat-label>
                 <mat-select [(ngModel)]="selectedProvincia" [disabled]="!selectedComunidades">
                     @for(provincia of provincias; track provincia.IDPovincia) {
                     <mat-option [value]="provincia.Provincia">
+
                         {{ provincia.Provincia }}
                     </mat-option>
                     }
@@ -59,6 +62,7 @@
     <mat-sidenav-content>
         <div class="d-flex justify-content-between align-items-center mt-4 mb-4 mx-5">
             <div>
+
                 <mat-form-field class="w-100">
                   <input matInput 
                          [matAutocomplete]="auto" 
@@ -75,6 +79,7 @@
                 <button mat-button (click)="resetBuscarCodigosPostales()">Reiniciar</button>
 
               </div>
+
             <button mat-button class="btn mb-2 me-2" (click)="sidenav.open()">Filtrar por</button>
         </div>
 
@@ -104,9 +109,9 @@
                                 <p>Gasolina 95 E5: {{ gasolinera.precioGasolina95E5 | euro }}</p>
                                 <p>Gasolina 98 E5: {{ gasolinera.precioGasolina98E5 | euro }}</p>
                                 <p>Hidrógeno: {{ gasolinera.precioHidrogeno | euro }}</p>
-                                <a [href]="gasolinera | googleMapRoute" target="_blank" ><button
-                                    mat-raised-button>Ver localización</button></a>
-                                <p></p>
+                                    <a [href]="gasolinera | googleMapRoute" target="_blank"><button
+                                        mat-raised-button>Ver localización</button></a>
+                                    <p></p>
                             </div>
                         </div>
                     </div>
