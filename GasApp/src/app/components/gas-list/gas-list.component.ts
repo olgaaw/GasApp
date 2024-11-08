@@ -128,26 +128,34 @@ export class GasListComponent implements OnInit {
 
   buscarCodigosPostales(): void {
     if (this.searchTerm) {
-
-      this.filteredCodes = this.filteredCodes.filter(code =>
-        code.codigo_postal.toString().includes(this.searchTerm) || 
-        code.municipio_nombre.toLowerCase().includes(this.searchTerm.toLowerCase())
+  
+      const formattedSearchTerm = this.searchTerm.padStart(5, '0');
+  
+      this.filteredCodes = this.originalCodes.filter(code =>
+        code.codigo_postal.toString().padStart(5, '0').includes(formattedSearchTerm)
       );
-
+  
     } else {
-      this.filteredCodes = []; 
+      this.filteredCodes = [...this.originalCodes];
     }
   }
 
+  
+
   seleccionarCodigoPostal(code: CodigoPostal): void {
-  this.searchTerm = code.codigo_postal.toString();
+    this.searchTerm = code.codigo_postal.toString().padStart(5, '0');
+  
+    this.filteredGasolineras = this.listaGasolineras.filter(gasolinera => {
+      const cpGasolinera = gasolinera.cp.toString().padStart(5, '0');
+  
+      return cpGasolinera === this.searchTerm;
+    });
 
-  this.filteredGasolineras = this.listaGasolineras.filter(gasolinera => {
-
-    const cpGasolinera = gasolinera.cp.toString();
-    
-    return cpGasolinera === this.searchTerm;
-  });
+    if (this.filteredGasolineras.length === 0) {
+      this.noResultsMessage = 'No existen gasolineras con ese código postal.';
+    } else {
+      this.noResultsMessage = '';
+    }
   }
 
   resetBuscarCodigosPostales(): void {
@@ -156,6 +164,9 @@ export class GasListComponent implements OnInit {
     this.filteredGasolineras = this.listaGasolineras;
 
     this.filteredCodes = this.originalCodes;
+
+    this.noResultsMessage = '';
+
 
   }
   buscarGasolineras(): void {
