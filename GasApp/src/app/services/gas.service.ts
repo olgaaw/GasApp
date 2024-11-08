@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { CarburantesListResponse } from '../models/carburantes-list.interface';
 import { ComunidadesAutonomasResponse } from '../models/comunidades-list.interface';
+import { CodeList } from '../models/cp-list.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -22,6 +23,10 @@ export class GasService {
 
   getCcAaList(): Observable<ComunidadesAutonomasResponse> {
     return this.http.get<ComunidadesAutonomasResponse>('https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/Listados/ComunidadesAutonomas/')
+  }
+
+  getCodeList(): Observable<CodeList[]> {
+    return this.http.get<CodeList[]>('http://localhost:3000/code-list');
   }
 
 }

@@ -4,6 +4,7 @@ import { Gasolinera } from '../../models/gas-item.dto';
 import { CarburantesList } from '../../models/carburantes-list.interface';
 import { ComunidadesAutonomas } from '../../models/comunidades-list.interface';
 import { MatDialog } from '@angular/material/dialog';
+import { CodeList } from '../../models/cp-list.interface';
 
 @Component({
   selector: 'app-gas-list',
@@ -15,6 +16,7 @@ export class GasListComponent implements OnInit {
   filteredGasolineras: Gasolinera[] = [];
   listaCarburantes: CarburantesList[] = [];
   listaComunidades: ComunidadesAutonomas[] = [];
+  listaCode: CodeList[] = [];
 
   selectedCarburantes: string | undefined; 
   selectedComunidades: string | undefined;
@@ -52,6 +54,10 @@ export class GasListComponent implements OnInit {
 
     this.gasService.getCcAaList().subscribe((resp) => {
       this.listaComunidades = resp;
+    });
+
+    this.gasService.getCodeList().subscribe(respuesta => {
+      this.listaCode = respuesta;
     });
   }
 
