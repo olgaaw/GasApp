@@ -47,8 +47,14 @@
     <mat-sidenav-content>
         <div class="d-flex justify-content-between align-items-center mt-4 mb-4 mx-5">
             <div>
-                <input type="text" class="form-control" id="search" placeholder="Buscar..." [(ngModel)]="searchTerm"
+                <input type="text" class="form-control" id="search" placeholder="Buscar..." [(ngModel)]="searchTerm"  [matAutocomplete]="auto"
                     (input)="buscarGasolineras()">
+                    <mat-autocomplete #auto="matAutocomplete">
+                        @for (code of listaCode; track code.codigo_postal) {
+                            <mat-option [value]="code">{{code.codigo_postal}} - {{code.municipio_nombre}}</mat-option>
+                        }
+                    </mat-autocomplete>
+                
             </div>
             <button mat-button class="btn mb-2 me-2" (click)="sidenav.open()">Filtrar por</button>
         </div>
