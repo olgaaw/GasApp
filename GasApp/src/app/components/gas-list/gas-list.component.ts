@@ -5,6 +5,7 @@ import { CarburantesList } from '../../models/carburantes-list.interface';
 import { ComunidadesAutonomas } from '../../models/comunidades-list.interface';
 import { MatDialog } from '@angular/material/dialog';
 import { ProvinciasList } from '../../models/provincias-list.interface';
+import { CodigoPostal } from '../../models/codigo-postal.interface';
 
 @Component({
   selector: 'app-gas-list',
@@ -16,6 +17,8 @@ export class GasListComponent implements OnInit {
   filteredGasolineras: Gasolinera[] = [];
   listaCarburantes: CarburantesList[] = [];
   listaComunidades: ComunidadesAutonomas[] = [];
+  filteredCodes: CodigoPostal[] = [];  // Para almacenar los códigos postales filtrados
+
   
 
   selectedCarburantes: string | undefined; 
@@ -57,6 +60,11 @@ export class GasListComponent implements OnInit {
 
     this.gasService.getCcAaList().subscribe((resp) => {
       this.listaComunidades = resp;
+    });
+
+    this.gasService.getCodigosPostales().subscribe((codes) => {
+      this.filteredCodes = codes;
+      console.log("Códigos postales cargados:", this.filteredCodes);  // Verifica los códigos postales
     });
   }
 
@@ -116,7 +124,34 @@ export class GasListComponent implements OnInit {
     return parseFloat(precio.replace(',', '.')) || 0;
   }
 
+  buscarCodigosPostales(): void {
+    if (this.searchTerm) {
+      console.log("Búsqueda en códigos postales con:", this.searchTerm);  // Depura el término de búsqueda
+
+      this.filteredCodes = this.filteredCodes.filter(code =>
+        code.codigo_postal.toString().includes(this.searchTerm) || 
+        code.municipio_nombre.toLowerCase().includes(this.searchTerm.toLowerCase())
+      );
+      console.log("Códigos filtrados:", this.filteredCodes);  // Verifica los códigos postales filtrados
+
+    } else {
+      this.filteredCodes = []; // Si no hay búsqueda, ocultar los resultados
+    }
+  }
+
+  seleccionarCodigoPostal(code: CodigoPostal): void {
+  this.searchTerm = code.codigo_postal.toString();
+
+  this.filteredGasolineras = this.listaGasolineras.filter(gasolinera => {
+
+    const cpGasolinera = gasolinera.cp.toString();
+    
+    return cpGasolinera === this.searchTerm;
+  });
+  }
   buscarGasolineras(): void {
+    console.log("Iniciando búsqueda con término:", this.searchTerm);
+
     let filtered = this.listaGasolineras;
 
     if (this.searchTerm != '') {
@@ -127,6 +162,8 @@ export class GasListComponent implements OnInit {
         gasolinera.cp.toString().includes(this.searchTerm)
       );
     }
+    console.log("Gasolineras filtradas por código postal:", filtered);
+
 
     this.filteredGasolineras = filtered;
     if (filtered.length == 0) {

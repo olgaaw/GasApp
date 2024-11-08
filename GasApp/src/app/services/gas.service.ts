@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { CarburantesListResponse } from '../models/carburantes-list.interface';
 import { ComunidadesAutonomasResponse } from '../models/comunidades-list.interface';
 import { ProvinciasListResponse } from '../models/provincias-list.interface';
+import { CodigoPostal } from '../models/codigo-postal.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -26,5 +27,9 @@ export class GasService {
 
   getProvinciasPorComunidad(idComunidad: string): Observable<ProvinciasListResponse> {
     return this.http.get<ProvinciasListResponse>(`https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/Listados/ProvinciasPorComunidad/${idComunidad}`);
+  }
+
+  getCodigosPostales(): Observable<CodigoPostal[]> {
+    return this.http.get<CodigoPostal[]>('http://localhost:3000/code-list');  // Ruta al archivo JSON
   }
 }
