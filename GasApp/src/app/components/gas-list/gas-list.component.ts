@@ -18,6 +18,8 @@ export class GasListComponent implements OnInit {
   listaCarburantes: CarburantesList[] = [];
   listaComunidades: ComunidadesAutonomas[] = [];
   filteredCodes: CodigoPostal[] = [];
+  originalCodes: CodigoPostal[] = [];
+
 
   
 
@@ -64,7 +66,7 @@ export class GasListComponent implements OnInit {
 
     this.gasService.getCodigosPostales().subscribe((codes) => {
       this.filteredCodes = codes;
-      console.log("Códigos postales cargados:", this.filteredCodes);
+      this.originalCodes = codes;
     });
   }
 
@@ -126,13 +128,11 @@ export class GasListComponent implements OnInit {
 
   buscarCodigosPostales(): void {
     if (this.searchTerm) {
-      console.log("Búsqueda en códigos postales con:", this.searchTerm);
 
       this.filteredCodes = this.filteredCodes.filter(code =>
         code.codigo_postal.toString().includes(this.searchTerm) || 
         code.municipio_nombre.toLowerCase().includes(this.searchTerm.toLowerCase())
       );
-      console.log("Códigos filtrados:", this.filteredCodes); 
 
     } else {
       this.filteredCodes = []; 
@@ -149,8 +149,16 @@ export class GasListComponent implements OnInit {
     return cpGasolinera === this.searchTerm;
   });
   }
+
+  resetBuscarCodigosPostales(): void {
+    this.searchTerm = '';
+      
+    this.filteredGasolineras = this.listaGasolineras;
+
+    this.filteredCodes = this.originalCodes;
+
+  }
   buscarGasolineras(): void {
-    console.log("Iniciando búsqueda con término:", this.searchTerm);
 
     let filtered = this.listaGasolineras;
 
@@ -162,7 +170,6 @@ export class GasListComponent implements OnInit {
         gasolinera.cp.toString().includes(this.searchTerm)
       );
     }
-    console.log("Gasolineras filtradas por código postal:", filtered);
 
 
     this.filteredGasolineras = filtered;
@@ -184,13 +191,7 @@ export class GasListComponent implements OnInit {
   }
 
   aplicarFiltros(): void {
-    console.log('Filtros aplicados:', {
-      precioMinimo: this.precioMinimo,
-      selectedCarburante: this.selectedCarburantes,
-      selectedComunidad: this.selectedComunidades,
-      selectedProvincia: this.selectedProvincia
-    });
-    
+ 
     this.filteredGasolineras = this.filtrarGasolineras();
   }
   
@@ -234,7 +235,6 @@ export class GasListComponent implements OnInit {
 
   filtrarCarburantes(): void {
     const carburante = this.selectedCarburantes || '';
-    console.log('Carburante seleccionado:', carburante);
   
     if (carburante) {
       this.filteredGasolineras = this.filteredGasolineras.filter(gasolinera => {
@@ -249,7 +249,6 @@ export class GasListComponent implements OnInit {
   
   filtrarComunidad(): void {
     const comunidad = this.selectedComunidades || '';
-    console.log('Comunidad seleccionada:', comunidad);
   
     if (comunidad) {
       this.filteredGasolineras = this.listaGasolineras.filter(gasolinera =>

@@ -30,6 +30,6 @@ export class GasService {
   }
 
   getCodigosPostales(): Observable<CodigoPostal[]> {
-    return this.http.get<CodigoPostal[]>('http://localhost:3000/code-list');  // Ruta al archivo JSON
+    return this.http.get<CodigoPostal[]>('http://localhost:3000/code-list');
   }
 }
