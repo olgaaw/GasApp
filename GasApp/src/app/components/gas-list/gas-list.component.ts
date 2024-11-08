@@ -4,6 +4,7 @@ import { Gasolinera } from '../../models/gas-item.dto';
 import { CarburantesList } from '../../models/carburantes-list.interface';
 import { ComunidadesAutonomas } from '../../models/comunidades-list.interface';
 import { MatDialog } from '@angular/material/dialog';
+import { ProvinciasList } from '../../models/provincias-list.interface';
 
 @Component({
   selector: 'app-gas-list',
@@ -15,9 +16,13 @@ export class GasListComponent implements OnInit {
   filteredGasolineras: Gasolinera[] = [];
   listaCarburantes: CarburantesList[] = [];
   listaComunidades: ComunidadesAutonomas[] = [];
+  
 
   selectedCarburantes: string | undefined; 
   selectedComunidades: string | undefined;
+  selectedProvincia: string | undefined;
+
+  provincias: ProvinciasList[] = [];
 
   searchTerm: string = '';
   noResultsMessage: string | undefined;
@@ -131,37 +136,53 @@ export class GasListComponent implements OnInit {
     }
   }
 
+  cargarProvincias(): void {
+    if (this.selectedComunidades) {
+      this.gasService.getProvinciasPorComunidad(this.selectedComunidades).subscribe((resp) => {
+        this.provincias = resp;
+      });
+    } else {
+      this.provincias = [];
+    }
+  }
+
   aplicarFiltros(): void {
     console.log('Filtros aplicados:', {
       precioMinimo: this.precioMinimo,
       selectedCarburante: this.selectedCarburantes,
-      selectedComunidad: this.selectedComunidades
+      selectedComunidad: this.selectedComunidades,
+      selectedProvincia: this.selectedProvincia
     });
+    
     this.filteredGasolineras = this.filtrarGasolineras();
-  
-    this.dialog.closeAll();
   }
   
   filtrarGasolineras(): Gasolinera[] {
     const comunidad = this.selectedComunidades || '';
+    const provincia = this.selectedProvincia || '';
     const carburante = this.selectedCarburantes || '';
-  
+
     return this.listaGasolineras.filter(gasolinera => {
-      let esDeLaComunidad = true;
+      let cumpleComunidad = true;
+      let cumpleProvincia = true;
+      let cumpleCarburante = true;
+
       if (comunidad) {
-        esDeLaComunidad = gasolinera.idComunidad === comunidad;
+        cumpleComunidad = gasolinera.idComunidad === comunidad;
       }
-  
-      let tieneCarburante = true;
+
+      if (provincia) {
+        cumpleProvincia = cumpleProvincia && gasolinera.provincia === provincia;
+      }
+
       if (carburante) {
-        tieneCarburante = gasolinera.tiposCombustible.includes(carburante) && 
-                          this.obtenerPrecioCarburante(gasolinera, carburante) > 0;
+        cumpleCarburante = gasolinera.tiposCombustible.includes(carburante) &&
+                           this.obtenerPrecioCarburante(gasolinera, carburante) > 0;
       }
-  
-      return esDeLaComunidad && tieneCarburante;
+
+      return cumpleComunidad && cumpleProvincia && cumpleCarburante;
     });
   }
-  
   
   filtrarPrecio(): void {
     let filtered = this.filteredGasolineras;

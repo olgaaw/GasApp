@@ -25,17 +25,25 @@
                 </mat-select>
             </mat-form-field>
 
-            <h5 class="mt-5">Comunidades Autonomas</h5>
+            <h5 class="mt-5">Comunidades Autónomas</h5>
             <mat-form-field appearance="fill" class="w-100">
-                <mat-label>Seleccionar comunidad</mat-label>
-                <mat-select [(value)]="selectedComunidades">
-                    @for(comunidad of listaComunidades; track comunidad.IDCCAA) {
-                    <mat-option [value]="comunidad.IDCCAA">
-                        {{ comunidad.CCAA }}
-                    </mat-option>
-                    }
-                </mat-select>
+              <mat-label>Seleccionar comunidad</mat-label>
+              <mat-select [(value)]="selectedComunidades" (selectionChange)="cargarProvincias()">
+                <mat-option *ngFor="let comunidad of listaComunidades" [value]="comunidad.IDCCAA">
+                  {{ comunidad.CCAA }}
+                </mat-option>
+              </mat-select>
             </mat-form-field>
+
+            <h5 class="mt-5">Provincias</h5>
+            <mat-form-field appearance="fill">
+                <mat-label>Provincia</mat-label>
+                <mat-select [(ngModel)]="selectedProvincia" [disabled]="!selectedComunidades">
+                    <mat-option *ngFor="let provincia of provincias" [value]="provincia.Provincia">
+                    {{ provincia.Provincia }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
 
             <mat-divider class="mt-4"></mat-divider>
             <div class="text-center mt-3">
@@ -79,6 +87,8 @@
                                 <p>Gasolina 95 E5: {{ gasolinera.precioGasolina95E5 | euro }}</p>
                                 <p>Gasolina 98 E5: {{ gasolinera.precioGasolina98E5 | euro }}</p>
                                 <p>Hidrógeno: {{ gasolinera.precioHidrogeno | euro }}</p>
+                                <p>Provincia: {{ gasolinera.provincia}}</p>
+
                                 <a [href]="gasolinera | googleMapRoute" target="_blank" ><button
                                     mat-raised-button>Ver localización</button></a>
                                 <p></p>
