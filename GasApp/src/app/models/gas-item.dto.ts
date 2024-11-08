@@ -17,7 +17,6 @@ export class Gasolinera {
       public latitud: string,
       public longitud: string,
       public tiposCombustible: string[] = [],
-      public comunidades: string[] = []
     ) {}
 
   }

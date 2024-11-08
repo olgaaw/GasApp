@@ -16,7 +16,7 @@
             <h5 class="mt-5">Carburantes</h5>
             <mat-form-field appearance="fill" class="w-100">
                 <mat-label>Seleccionar carburante</mat-label>
-                <mat-select [(value)]="selectedCarburantes">
+                <mat-select [(value)]="selectedCarburante">
                     <mat-option value="Gasoleo A">Gasóleo A </mat-option>
                     <mat-option value="Gasoleo B">Gasóleo B</mat-option>
                     <mat-option value="Gasolina 95 E5">Gasolina 95 E5</mat-option>
@@ -28,10 +28,22 @@
             <h5 class="mt-5">Comunidades Autonomas</h5>
             <mat-form-field appearance="fill" class="w-100">
                 <mat-label>Seleccionar comunidad</mat-label>
-                <mat-select [(value)]="selectedComunidades">
+                <mat-select [(value)]="selectedComunidad">
                     @for(comunidad of listaComunidades; track comunidad.IDCCAA) {
                     <mat-option [value]="comunidad.IDCCAA">
                         {{ comunidad.CCAA }}
+                    </mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+
+            <h5 class="mt-5">Provincias</h5>
+            <mat-form-field appearance="fill" class="w-100">
+                <mat-label>Seleccionar provincia</mat-label>
+                <mat-select [(value)]="selectedComunidad">
+                    @for(provincia of listaProvincias; track provincia.IDPovincia) {
+                    <mat-option [value]="provincia.IDPovincia">
+                        {{ provincia.Provincia }}
                     </mat-option>
                     }
                 </mat-select>
@@ -47,14 +59,12 @@
     <mat-sidenav-content>
         <div class="d-flex justify-content-between align-items-center mt-4 mb-4 mx-5">
             <div>
-                <input type="text" class="form-control" id="search" placeholder="Buscar..." [(ngModel)]="searchTerm"  [matAutocomplete]="auto"
-                    (input)="buscarGasolineras()">
+                <input type="text" class="form-control" id="search" placeholder="Buscar..." [(ngModel)]="searchTerm"  [matAutocomplete]="auto" (input)="buscarGasolineras()">
                     <mat-autocomplete #auto="matAutocomplete">
                         @for (code of listaCode; track code.codigo_postal) {
-                            <mat-option [value]="code">{{code.codigo_postal}} - {{code.municipio_nombre}}</mat-option>
+                            <mat-option [value]="code.codigo_postal" (input)="buscarGasolineras()">{{code.codigo_postal}} - {{code.municipio_nombre}} </mat-option>
                         }
                     </mat-autocomplete>
-                
             </div>
             <button mat-button class="btn mb-2 me-2" (click)="sidenav.open()">Filtrar por</button>
         </div>
@@ -85,9 +95,9 @@
                                 <p>Gasolina 95 E5: {{ gasolinera.precioGasolina95E5 | euro }}</p>
                                 <p>Gasolina 98 E5: {{ gasolinera.precioGasolina98E5 | euro }}</p>
                                 <p>Hidrógeno: {{ gasolinera.precioHidrogeno | euro }}</p>
-                                <a [href]="gasolinera | googleMapRoute" target="_blank" ><button
-                                    mat-raised-button>Ver localización</button></a>
-                                <p></p>
+                                    <a [href]="gasolinera | googleMapRoute" target="_blank"><button
+                                        mat-raised-button>Ver localización</button></a>
+                                    <p></p>
                             </div>
                         </div>
                     </div>
