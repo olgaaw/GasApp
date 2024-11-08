@@ -27,14 +27,14 @@
 
             <h5 class="mt-5">Comunidades Autónomas</h5>
             <mat-form-field appearance="fill" class="w-100">
-              <mat-label>Seleccionar comunidad</mat-label>
-              <mat-select [(value)]="selectedComunidades" (selectionChange)="cargarProvincias()">
-                @for(comunidad of listaComunidades; track comunidad.IDCCAA) {
-                <mat-option [value]="comunidad.IDCCAA">
-                  {{ comunidad.CCAA }}
-                </mat-option>
-            }
-              </mat-select>
+                <mat-label>Seleccionar comunidad</mat-label>
+                <mat-select [(value)]="selectedComunidades" (selectionChange)="cargarProvincias()">
+                    @for(comunidad of listaComunidades; track comunidad.IDCCAA) {
+                    <mat-option [value]="comunidad.IDCCAA">
+                        {{ comunidad.CCAA }}
+                    </mat-option>
+                    }
+                </mat-select>
             </mat-form-field>
 
             <h5 class="mt-5">Provincias</h5>
@@ -43,11 +43,11 @@
                 <mat-select [(ngModel)]="selectedProvincia" [disabled]="!selectedComunidades">
                     @for(provincia of provincias; track provincia.IDPovincia) {
                     <mat-option [value]="provincia.Provincia">
-                    {{ provincia.Provincia }}
-                  </mat-option>
-                }
+                        {{ provincia.Provincia }}
+                    </mat-option>
+                    }
                 </mat-select>
-              </mat-form-field>
+            </mat-form-field>
 
             <mat-divider class="mt-4"></mat-divider>
             <div class="text-center mt-3">
@@ -60,19 +60,17 @@
         <div class="d-flex justify-content-between align-items-center mt-4 mb-4 mx-5">
             <div>
                 <mat-form-field class="w-100">
-                  <input matInput 
-                         [matAutocomplete]="auto" 
-                         id="search" 
-                         placeholder="Buscar por código postal..." 
-                         [(ngModel)]="searchTerm" 
-                         (input)="buscarCodigosPostales()">
-                  <mat-autocomplete #auto="matAutocomplete">
-                    <mat-option *ngFor="let code of filteredCodes" [value]="code.codigo_postal" (onSelectionChange)="seleccionarCodigoPostal(code)">
-                      {{ code.codigo_postal }} - {{ code.municipio_nombre }}
-                    </mat-option>
-                  </mat-autocomplete>
+                    <input matInput [matAutocomplete]="auto" id="search" placeholder="Buscar por código postal..."
+                        [(ngModel)]="searchTerm" (input)="buscarCodigosPostales()">
+                    <mat-autocomplete #auto="matAutocomplete">
+                        @for(code of filteredCodes; track code.codigo_postal) {
+                        <mat-option (onSelectionChange)="seleccionarCodigoPostal(code)">
+                            {{ code.codigo_postal }} - {{ code.municipio_nombre }}
+                        </mat-option>
+                        }
+                    </mat-autocomplete>
                 </mat-form-field>
-              </div>
+            </div>
             <button mat-button class="btn mb-2 me-2" (click)="sidenav.open()">Filtrar por</button>
         </div>
 
@@ -80,10 +78,11 @@
             <div class="row">
                 <h1 class="text-center align-items-center">Gasolineras</h1>
 
-                <div *ngIf="noResultsMessage" class="alert alert-warning text-center mt-4">
+                @if(noResultsMessage){
+                <div class="alert alert-warning text-center mt-4">
                     {{ noResultsMessage }}
                 </div>
-
+                }
                 @for(gasolinera of filteredGasolineras; track gasolinera.id) {
                 <div class="col-4 mb-4 mt-4 align-center d-flex">
                     <div class="w-100 mx-3">
@@ -102,8 +101,8 @@
                                 <p>Gasolina 95 E5: {{ gasolinera.precioGasolina95E5 | euro }}</p>
                                 <p>Gasolina 98 E5: {{ gasolinera.precioGasolina98E5 | euro }}</p>
                                 <p>Hidrógeno: {{ gasolinera.precioHidrogeno | euro }}</p>
-                                <a [href]="gasolinera | googleMapRoute" target="_blank" ><button
-                                    mat-raised-button>Ver localización</button></a>
+                                <a [href]="gasolinera | googleMapRoute" target="_blank"><button mat-raised-button>Ver
+                                        localización</button></a>
                                 <p></p>
                             </div>
                         </div>
