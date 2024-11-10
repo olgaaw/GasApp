@@ -171,7 +171,7 @@ export class GasListComponent implements OnInit {
           .includes(formattedSearchTerm)
       );
     } else {
-      this.filteredCodes = [...this.originalCodes];
+      this.filteredCodes = this.originalCodes;
     }
   }
 
@@ -253,36 +253,4 @@ export class GasListComponent implements OnInit {
     this.filteredGasolineras = filtered;
   }
 
-  filtrarCarburantes(): void {
-    const carburante = this.selectedCarburantes || '';
-
-    if (carburante) {
-      this.filteredGasolineras = this.filteredGasolineras.filter(
-        (gasolinera) => {
-          const precioCarburante = this.obtenerPrecioCarburante(
-            gasolinera,
-            carburante
-          );
-          return (
-            gasolinera.tiposCombustible.includes(carburante) &&
-            precioCarburante > 0
-          );
-        }
-      );
-    } else {
-      this.filteredGasolineras = this.listaGasolineras;
-    }
-  }
-
-  filtrarComunidad(): void {
-    const comunidad = this.selectedComunidades || '';
-
-    if (comunidad) {
-      this.filteredGasolineras = this.listaGasolineras.filter(
-        (gasolinera) => gasolinera.idComunidad == comunidad
-      );
-    } else {
-      this.filteredGasolineras = this.listaGasolineras;
-    }
-  }
 }
